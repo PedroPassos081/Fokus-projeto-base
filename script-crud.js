@@ -12,6 +12,12 @@ const taskAtiveDescription = document.querySelector('.app__section-active-task-d
 
 const btnCancelar = document.querySelector('.app__form-footer__button--cancel')
 
+const btnDeletar = document.querySelector('.app__form-footer__button--delete')
+
+const btnDeletarConcluidas = document.querySelector('#btn-remover-concluidas')
+const btnDeletarTodas = document.querySelector('#btn-remover-todas')
+
+
 const localStorageTasks = localStorage.getItem('tasks')
 let tasks = localStorageTasks ? JSON.parse(localStorageTasks) : []
 
@@ -106,6 +112,7 @@ function createTask(tarefa) {
     }
 
     svgIcon.addEventListener('click', (event) => {
+        
         // Marcando as tarefas como concluida no localStorage 
         if(tarefa == tarefaSelecionada) {
             event.stopPropagation()
@@ -135,6 +142,46 @@ tasks.forEach(task => {
     const taskItem = createTask(task)
     taskListContainer.appendChild(taskItem)
 })
+
+btnCancelar.addEventListener('click', limparForm)
+
+btnDeletar.addEventListener('click', () => {
+    if(tarefaSelecionada) {
+        const index = tasks.indexOf(tarefaSelecionada)
+
+        if(index !== -1){
+            tasks.splice(index, 1)
+        }
+
+        itemTarefaSelecionada.remove()
+        tasks.filter(t=> t!= tarefaSelecionada)
+        itemTarefaSelecionada = null
+        tarefaSelecionada = null
+    }
+
+    updateLocalStorage()
+    limparForm()
+})
+
+// função para excluir as tarefas concluidas ou todas as tarefas
+const removerTarefas = (somenteConcluidas) => {
+    const seletor = somenteConcluidas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item'
+    document.querySelectorAll(seletor).forEach((element) => {
+        element.remove();
+    });
+
+    tarefas = somenteConcluidas ? tarefas.filter(t => !t.concluida) : []
+    updateLocalStorage()
+}
+
+btnDeletarConcluidas.addEventListener('click', () => {
+    removerTarefas(true)
+})
+
+btnDeletarTodas.addEventListener('click', () => {
+    removerTarefas(false)
+})
+
 
 // função para abrir uma tarefa nova 
 toggleFormTaskBtn.addEventListener('click', () => {
