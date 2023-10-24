@@ -230,4 +230,14 @@ document.addEventListener('TarefaFinalizada', (e) => {
         updateLocalStorage()
     }
 })
+
+document.addEventListener("TarefaFinalizada", function (e) {
+    if (tarefaSelecionada) {
+    tarefaSelecionada.concluida = true
+    itemTarefaSelecionada.classList.add('app__section-task-list-item-complete')
+    itemTarefaSelecionada.querySelector('button').setAttribute('disabled', true)
+    updateLocalStorage()
+    }
+    });
+    
  
